@@ -1,0 +1,15 @@
+{
+  "name": "ascii2gpx",
+  "version": "1.0.0",
+  "description": "converts ascii file to GPX",
+  "main": "main.js",
+  "dependencies": {
+    "xmlbuilder": "^15.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Clark Dennison",
+  "license": "ISC"
+}
