@@ -105,8 +105,8 @@ req.end(data => {
   }); 
   
   var mail = { 
-    from: "pxx.approvals@gmail.com", 
-    to: "clark.dennison@gmail.com", 
+    from: process.env.USERNAME, 
+    to: process.env.TOEMAIL, 
     subject: "Updated Gulstream track", 
     text: "Attached Gulfstream updates",
     attachments: [
