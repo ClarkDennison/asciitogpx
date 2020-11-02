@@ -1,3 +1,6 @@
+require('dotenv').config()
+var nodemailer = require("nodemailer"); 
+
 const https = require('https')
 
 var builder = require('xmlbuilder');
@@ -91,6 +94,37 @@ req.on('error', error => {
   console.error(error)
 })
 
-req.end()
+req.end(data => {
 
+  var sender = nodemailer.createTransport({ 
+    service: 'gmail', 
+    auth: { 
+      user: process.env.USERNAME, 
+      pass: process.env.PASSWORD
+    } 
+  }); 
+  
+  var mail = { 
+    from: "pxx.approvals@gmail.com", 
+    to: "clark.dennison@gmail.com", 
+    subject: "Updated Gulstream track", 
+    text: "Attached Gulfstream updates",
+    attachments: [
+      {
+        filename: 'GulfStream.GPX',
+        path: __dirname + '/GulfStream.GPX',
+        cid: 'uniq-mailtrap.png' 
+      }
+    ]	
+  }; 
+  
+  sender.sendMail(mail, function(error, info) { 
+    if (error) { 
+      console.log(error); 
+    } else { 
+      console.log("Email sent successfully: "
+                   + info.response); 
+    } 
+  });  
+})
 

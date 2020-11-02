@@ -4,6 +4,8 @@
   "description": "converts ascii file to GPX",
   "main": "main.js",
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "nodemailer": "^6.4.14",
     "xmlbuilder": "^15.1.1"
   },
   "devDependencies": {},
@@ -13,7 +15,7 @@
   "author": "Clark Dennison",
   "license": "ISC",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ClarkDennison/asciitogpx.git"
+    "type": "git",
+    "url": "https://github.com/ClarkDennison/asciitogpx.git"
   }
 }
