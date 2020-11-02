@@ -2,18 +2,7 @@ const https = require('https')
 
 var builder = require('xmlbuilder');
 
-var obj = { gpx: { '@xmlns': 'http://www.topografix.com/GPX/1/1'} };
-
-var obj = builder.create('gpx')
-	.att('xmlns', 'http://www.topografix.com/GPX/1/1')
-	.att('version', '1.1')
-	.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-	.att('xsi:schemaLocation', 'http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd');
-
-// add each waypoint
-var wpt = obj.ele('wpt');
-wpt.att('lat', '25.1');
-wpt.att('lon', '-80.1');
+fs = require('fs');
 
 const options = {
   hostname: 'ocean.weather.gov',
@@ -28,54 +17,73 @@ const req = https.request(options, res => {
   let body = [];	
   res.on('data', d => {
     body.push(d);
-//    var parts = d.split(':');
-//    console.log(parts[1]);
-//    console.log(parts[3]);
-//    var xml = obj.end({ pretty: true});
-//    console.log(xml);
   }).on('end', () => {
     body = Buffer.concat(body).toString();
 
     var parts = body.split(':');
     
+    var obj = builder.create('gpx', { encoding: 'utf-8' })
+	.att('version', '1.1')
+	.att('xmlns', 'http://www.topografix.com/GPX/1/1');
+//	.att('creator', 'Navionics Boating App');
+//	.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+//	.att('xsi:schemaLocation', 'http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd');
+//    var metadata = obj.ele('metadata');
+//    var link     = metadata.ele('link', { 'href' : 'http://www.navionics.com' } );
+    
+    var trk = obj.ele('trk');
+    var name = trk.ele('name', 'Gulf Stream Track');
+    var trkseg = trk.ele('trkseg');
+
     let northWallwpts = parts[1].split('GULF');
 //    console.log(northWallwpts[0]);
     northWallwpts = northWallwpts[0].split(' ');
     
-    let southWallwpts = parts[2].split('2.  ');
-//    console.log(southWallwpts[0]);
-    southWallwpts = southWallwpts[0].split(' ');
-
     for(var i = 0; i < northWallwpts.length; i++){
       var match = /\r|\n/.exec(northWallwpts[i]);	    
       if (!match && northWallwpts[i] != " " && northWallwpts[i] != null){
 	 let latLong = northWallwpts[i].split('N');
 // add each waypoint
-	 var wpt = obj.ele('wpt');
-	 wpt.att('lat', latLong[0]);
-	 wpt.att('lon', '-' + latLong[1].replace("W", ""));
-	 
-	 var name = wpt.ele('name', 'Gulf North Wall ' + i);
+	 var trkpt  = trkseg.ele('trkpt');
+	 trkpt.att('lat', latLong[0]);
+	 trkpt.att('lon', '-' + latLong[1].replace("W", ""));
+
+	 var trkptname = trkpt.ele('ele', '-1'); 
+	 var time      = trkpt.ele('time', new Date().toISOString());     
       }
     }
-		  
+
+    var trkseg = trk.ele('trkseg');
+
+    let southWallwpts = parts[2].split('2.  ');
+//    console.log(southWallwpts[0]);
+    southWallwpts = southWallwpts[0].split(' ');
+
     for(var i = 0; i < southWallwpts.length; i++){
       var match = /\r|\n/.exec(southWallwpts[i]);	    
       if (!match && southWallwpts[i] != " " && southWallwpts[i] != null){
 	 let latLong =southWallwpts[i].split('N');
+      
 // add each waypoint
-	 var wpt = obj.ele('wpt');
-	 wpt.att('lat', latLong[0]);
-	 wpt.att('lon', '-' + latLong[1].replace("W", ""));	 
+	 var trkpt  = trkseg.ele('trkpt');
+	 trkpt.att('lat', latLong[0]);
+	 trkpt.att('lon', '-' + latLong[1].replace("W", ""));
 
-	 var name = wpt.ele('name', 'Gulf South Wall ' + i);
+	 var trkptname = trkpt.ele('ele', '-1'); 
+	 var time      = trkpt.ele('time', new Date().toISOString());     
+
       }
     }
 
     var xml = obj.end({ pretty: true});
     console.log(xml);
-//    console.log(parts[1]);
-//    console.log(parts[2]);
+  
+    fs.writeFile('GulfStream.GPX', xml, function (err) {
+	if (err) {
+		console.log(err)
+	}
+    });
+  
   })	
 })
 
@@ -85,8 +93,4 @@ req.on('error', error => {
 
 req.end()
 
-// add each waypoint
-var wpt = obj.ele('wpt');
-wpt.att('lat', '25.1');
-wpt.att('lon', '-80.1');
 
