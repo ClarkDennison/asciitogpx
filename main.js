@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: __dirname + '/.env'})
 var nodemailer = require("nodemailer"); 
 
 const https = require('https')
@@ -28,18 +28,12 @@ const req = https.request(options, res => {
     var obj = builder.create('gpx', { encoding: 'utf-8' })
 	.att('version', '1.1')
 	.att('xmlns', 'http://www.topografix.com/GPX/1/1');
-//	.att('creator', 'Navionics Boating App');
-//	.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-//	.att('xsi:schemaLocation', 'http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd');
-//    var metadata = obj.ele('metadata');
-//    var link     = metadata.ele('link', { 'href' : 'http://www.navionics.com' } );
     
     var trk = obj.ele('trk');
     var name = trk.ele('name', 'Gulf Stream Track');
     var trkseg = trk.ele('trkseg');
 
     let northWallwpts = parts[1].split('GULF');
-//    console.log(northWallwpts[0]);
     northWallwpts = northWallwpts[0].split(' ');
     
     for(var i = 0; i < northWallwpts.length; i++){
@@ -79,8 +73,8 @@ const req = https.request(options, res => {
     }
 
     var xml = obj.end({ pretty: true});
-    console.log(xml);
-  
+//    console.log(xml);
+
     fs.writeFile('GulfStream.GPX', xml, function (err) {
 	if (err) {
 		console.log(err)
