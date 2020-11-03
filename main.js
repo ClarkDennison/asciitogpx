@@ -74,13 +74,12 @@ const req = https.request(options, res => {
 
     var xml = obj.end({ pretty: true});
 //    console.log(xml);
+	  fs.writeFile('GulfStream.GPX', xml, function (err) {
+		  if (err) {
+			  console.log(err)
+		  }
+	  });
 
-    fs.writeFile('GulfStream.GPX', xml, function (err) {
-	if (err) {
-		console.log(err)
-	}
-    });
-  
   })	
 })
 
