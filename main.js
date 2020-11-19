@@ -30,7 +30,7 @@ const req = https.request(options, res => {
 	.att('xmlns', 'http://www.topografix.com/GPX/1/1');
     
     var trk = obj.ele('trk');
-    var name = trk.ele('name', 'Gulf Stream Track');
+    var name = trk.ele('name', 'Gulf Stream Track ' + new Date().toISOString().split('T')[0]);
     var trkseg = trk.ele('trkseg');
 
     let northWallwpts = parts[1].split('GULF');
@@ -96,6 +96,7 @@ req.end(data => {
       pass: process.env.PASSWORD
     } 
   }); 
+
   
   var mail = { 
     from: process.env.USERNAME, 
@@ -104,7 +105,7 @@ req.end(data => {
     text: "Attached Gulfstream updates",
     attachments: [
       {
-        filename: 'GulfStream.GPX',
+        filename: 'GulfStream.' + new Date().toISOString().split('T')[0] + '.GPX',
         path: __dirname + '/GulfStream.GPX',
         cid: 'uniq-mailtrap.png' 
       }
