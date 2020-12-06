@@ -1,3 +1,4 @@
 node_modules/
 GulfStream.GPX
 .env
+.DS_Store
