@@ -17,6 +17,7 @@ const options = {
 var today = new Date();
 var todayString = today.toISOString().split('T')[0];
 var timeString  = today.toISOString();
+var elementNumber = "1";
 
 const req = https.request(options, res => {
   console.log(`statusCode: ${res.statusCode}`)
@@ -49,8 +50,8 @@ const req = https.request(options, res => {
 	 trkpt.att('lat', latLong[0]);
 	 trkpt.att('lon', '-' + latLong[1].replace("W", ""));
 
-	 var trkptname = trkpt.ele('ele', '-1'); 
-	 var time      = trkpt.ele('time', timeString);     
+	 var trkptname = trkpt.ele('ele', elementNumber); 
+	 var time      = trkpt.ele('time', new Date().toISOString());     
       }
     }
 
@@ -70,8 +71,8 @@ const req = https.request(options, res => {
 	 trkpt.att('lat', latLong[0]);
 	 trkpt.att('lon', '-' + latLong[1].replace("W", ""));
 
-	 var trkptname = trkpt.ele('ele', '-1'); 
-	 var time      = trkpt.ele('time', timeString);     
+	 var trkptname = trkpt.ele('ele', elementNumber); 
+	 var time      = trkpt.ele('time', new Date().toISOString());     
 
       }
     }
