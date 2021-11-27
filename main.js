@@ -14,6 +14,11 @@ const options = {
   method: 'GET'
 }
 
+var today = new Date();
+var todayString = today.toISOString().split('T')[0];
+var timeString  = today.toISOString();
+var elementNumber = "1";
+
 const req = https.request(options, res => {
   console.log(`statusCode: ${res.statusCode}`)
 
@@ -30,7 +35,7 @@ const req = https.request(options, res => {
 	.att('xmlns', 'http://www.topografix.com/GPX/1/1');
     
     var trk = obj.ele('trk');
-    var name = trk.ele('name', 'Gulf Stream Track ' + new Date().toISOString().split('T')[0]);
+    var name = trk.ele('name', 'Gulf Stream Track ' + todayString);
     var trkseg = trk.ele('trkseg');
 
     let northWallwpts = parts[1].split('GULF');
@@ -45,7 +50,7 @@ const req = https.request(options, res => {
 	 trkpt.att('lat', latLong[0]);
 	 trkpt.att('lon', '-' + latLong[1].replace("W", ""));
 
-	 var trkptname = trkpt.ele('ele', '-1'); 
+	 var trkptname = trkpt.ele('ele', elementNumber); 
 	 var time      = trkpt.ele('time', new Date().toISOString());     
       }
     }
@@ -66,7 +71,7 @@ const req = https.request(options, res => {
 	 trkpt.att('lat', latLong[0]);
 	 trkpt.att('lon', '-' + latLong[1].replace("W", ""));
 
-	 var trkptname = trkpt.ele('ele', '-1'); 
+	 var trkptname = trkpt.ele('ele', elementNumber); 
 	 var time      = trkpt.ele('time', new Date().toISOString());     
 
       }
@@ -74,7 +79,7 @@ const req = https.request(options, res => {
 
     var xml = obj.end({ pretty: true});
 //    console.log(xml);
-	  fs.writeFile('GulfStream.GPX', xml, function (err) {
+	  fs.writeFile( __dirname + '/GulfStream.GPX', xml, function (err) {
 		  if (err) {
 			  console.log(err)
 		  }
@@ -105,7 +110,7 @@ req.end(data => {
     text: "Attached Gulfstream updates",
     attachments: [
       {
-        filename: 'GulfStream.' + new Date().toISOString().split('T')[0] + '.GPX',
+        filename: 'GulfStream.' + todayString + '.GPX',
         path: __dirname + '/GulfStream.GPX',
         cid: 'uniq-mailtrap.png' 
       }
